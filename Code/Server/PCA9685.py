@@ -57,7 +57,11 @@ class PCA9685:
         self.write(self.__MODE1, oldmode | 0x80)
 
     def setPWM(self, channel, on, off):
-        "Sets a single PWM channel"
+        """Sets a single PWM channel
+        channel: 0-15, the PWM channel to set
+        on: 0-4095, the time when the PWM signal starts
+        off: 0-4095, the time when the PWM signal ends
+        """
         self.write(self.__LED0_ON_L + 4 * channel, on & 0xFF)
         self.write(self.__LED0_ON_H + 4 * channel, on >> 8)
         self.write(self.__LED0_OFF_L + 4 * channel, off & 0xFF)
@@ -67,7 +71,10 @@ class PCA9685:
         self.setPWM(channel, 0, duty)
 
     def setServoPulse(self, channel, pulse):
-        "Sets the Servo Pulse,The PWM frequency must be 50HZ"
+        """Sets the Servo Pulse,The PWM frequency must be 50HZ
+        channel: 0-15, the PWM channel to set
+        pulse: 0-20000, the pulse width in microseconds
+        """
         pulse = pulse * 4096 / 20000  # PWM frequency is 50HZ,the period is 20000us
         self.setPWM(channel, 0, int(pulse))
 
