@@ -1,45 +1,42 @@
-#coding:utf-8
+# coding:utf-8
 from PCA9685 import PCA9685
-import time 
+import time
+
+
 class Servo:
     def __init__(self):
-        self.angleMin=18
-        self.angleMax=162
-        self.pwm = PCA9685(address=0x40, debug=True)   
-        self.pwm.setPWMFreq(50)               # Set the cycle frequency of PWM
-    #Convert the input angle to the value of pca9685
-    def map(self,value,fromLow,fromHigh,toLow,toHigh):
-        return (toHigh-toLow)*(value-fromLow) / (fromHigh-fromLow) + toLow
-    def setServoAngle(self,channel, angle):
+        self.angleMin = 18
+        self.angleMax = 162
+        self.pwm = PCA9685(address=0x40, debug=True)
+        self.pwm.setPWMFreq(50)  # Set the cycle frequency of PWM
+
+    # Convert the input angle to the value of pca9685
+    def map(self, value, fromLow, fromHigh, toLow, toHigh):
+        return (toHigh - toLow) * (value - fromLow) / (fromHigh - fromLow) + toLow
+
+    def setServoAngle(self, channel, angle):
         if angle < self.angleMin:
             angle = self.angleMin
-        elif angle >self.angleMax:
-            angle=self.angleMax
-        date=self.map(angle,0,180,102,512)
-        #print(date,date/4096*0.02)
-        self.pwm.setPWM(channel, 0, int(date))
- 
+        elif angle > self.angleMax:
+            angle = self.angleMax
+        # XXX: what are the numbers 102 and 512?
+        data = self.map(angle, 0, 180, 102, 512)
+        # print(data,data/4096*0.02)
+        self.pwm.setPWM(channel, 0, int(data))
+
+
 # Main program logic follows:
-if __name__ == '__main__':
-    print("Now servos will rotate to 90°.") 
+if __name__ == "__main__":
+    print("Now servos will rotate to 90°.")
     print("If they have already been at 90°, nothing will be observed.")
     print("Please keep the program running when installing the servos.")
     print("After that, you can press ctrl-C to end the program.")
-    S=Servo()
+    # XXX: It does not seems to stop the servos after ctrl-C
+    S = Servo()
     while True:
         try:
             for i in range(16):
-                S.setServoAngle(i,90)
+                S.setServoAngle(i, 90)
         except KeyboardInterrupt:
-            print ("\nEnd of program")
+            print("\nEnd of program")
             break
-
-           
-        
-        
-
-
-        
-        
-        
-        
